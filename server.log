@@ -2,3 +2,11 @@
 > chirpy@1.0.0 dev
 > npx tsc && node dist/index.js
 
+[NON-OK] GET / - Status: 301
+[NON-OK] GET / - Status: 301
+[NON-OK] GET / - Status: 301
+[NON-OK] GET / - Status: 301
+[NON-OK] GET / - Status: 301
+[NON-OK] GET / - Status: 301
+[NON-OK] GET / - Status: 301
+[NON-OK] GET / - Status: 301
