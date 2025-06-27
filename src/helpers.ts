@@ -1,3 +1,5 @@
+import { Response } from "express";
+
 export function CleanMessage(message: string) {
     const sentence = message.split(" ");
     const badWords = ["kerfuffle", "sharbert", "fornax"]
@@ -17,3 +19,14 @@ function removeBadWords(sentence: string[], badWord: string) {
         sentence[index] = "****";
     }
 }
+
+export function respondWithError(res: Response, message: string, code: number) {
+    respondWithJSON(res, { error: message }, code);
+}
+
+export function respondWithJSON(res: Response, payload: { error: string; },  code = 200) {
+    res.header("Content-Type", "application/json");
+    res.status(code).send(JSON.stringify(payload));
+    res.end()
+}
+

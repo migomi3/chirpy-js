@@ -1,17 +1,10 @@
 import { CleanMessage } from "../helpers.js";
-export function handlerValidate(req, res) {
+export async function handlerValidate(req, res) {
     console.log("validating...");
-    try {
-        const input = req.body;
-        if (input.body.length > 140) {
-            throw new Error("Chirp is too long");
-        }
-        res.send({ "cleanedBody": CleanMessage(input.body) });
+    const input = req.body;
+    if (input.body.length > 140) {
+        throw new Error("Chirp is too long");
     }
-    catch (error) {
-        if (error instanceof Error) {
-            res.status(400).send({ "error": error.message });
-        }
-    }
+    res.send({ "cleanedBody": CleanMessage(input.body) });
     console.log("validation finished");
 }

@@ -13,3 +13,11 @@ function removeBadWords(sentence, badWord) {
         sentence[index] = "****";
     }
 }
+export function respondWithError(res, message, code) {
+    respondWithJSON(res, { error: message }, code);
+}
+export function respondWithJSON(res, payload, code = 200) {
+    res.header("Content-Type", "application/json");
+    res.status(code).send(JSON.stringify(payload));
+    res.end();
+}
