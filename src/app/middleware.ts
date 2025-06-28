@@ -1,6 +1,7 @@
 import {Request, Response, NextFunction } from "express";
 import { config } from "../config.js";
 import { respondWithError } from "../helpers.js";
+import { BadRequestError, ForbiddenError, NotFoundError, UnauthorizedError } from "../api/errors.js";
 
 export function middlewareLogResponses(req: Request, res: Response, next: NextFunction) {
     console.log("Logging responses...")
@@ -22,6 +23,20 @@ export function middlewareMetricsInc(req: Request, res: Response, next: NextFunc
 }
 
 export function middlewareErrorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
-    console.log(err.message);
-    respondWithError(res, "Something went wrong on our end", 500);
+    switch (err.constructor) {
+        case BadRequestError:
+            respondWithError(res, err.message, 400);
+            break;
+        case UnauthorizedError:
+            respondWithError(res, err.message, 401);
+            break;
+        case ForbiddenError:
+            respondWithError(res, err.message, 403);
+            break;
+        case NotFoundError:
+            respondWithError(res, err.message, 404);
+            break;
+        default:
+            respondWithError(res, "Something went wrong on our end", 500);
+    }
 }
