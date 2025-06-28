@@ -13,7 +13,7 @@ export function middlewareLogResponses(req, res, next) {
 }
 export function middlewareMetricsInc(req, res, next) {
     console.log("updating server hits...");
-    config.fileserverHits++;
+    config.fileServerHits++;
     next();
 }
 export function middlewareErrorHandler(err, req, res, next) {

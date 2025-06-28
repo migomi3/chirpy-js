@@ -1,3 +1,6 @@
+import { envOrThrow } from "./helpers.js";
+process.loadEnvFile();
 export const config = {
-    fileserverHits: 0
+    fileServerHits: 0,
+    dbURL: envOrThrow("DB_URL"),
 };

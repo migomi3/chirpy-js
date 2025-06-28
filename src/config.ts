@@ -1,7 +1,13 @@
+import { envOrThrow } from "./helpers.js";
+
+process.loadEnvFile()
+
 type APIConfig = {
-    fileserverHits: number;
+    fileServerHits: number;
+    dbURL: string;
 }
 
-export const config = {
-    fileserverHits: 0
-}
+export const config: APIConfig = {
+  fileServerHits: 0,
+  dbURL: envOrThrow("DB_URL"),
+};
