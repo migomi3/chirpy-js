@@ -4,8 +4,13 @@ import { middlewareErrorHandler, middlewareLogResponses, middlewareMetricsInc } 
 import { handlerMetrics } from "./api/metrics.js";
 import { handlerReset } from "./api/reset.js";
 import { handlerValidate } from "./api/validate.js";
+import { migrate } from "drizzle-orm/postgres-js/migrator";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+import { config } from "./config.js";
 const app = express();
-const PORT = 8080;
+const migrationClient = postgres(config.db.url, { max: 1 });
+await migrate(drizzle(migrationClient), config.db.migrationConfig);
 app.use(middlewareLogResponses, express.json());
 app.use("/app", middlewareMetricsInc, express.static("./src/app"));
 app.get("/api/healthz", (req, res, next) => {
@@ -21,4 +26,4 @@ app.post("/api/validate_chirp", (req, res, next) => {
     Promise.resolve(handlerValidate(req, res)).catch(next);
 });
 app.use(middlewareErrorHandler);
-app.listen(PORT);
+app.listen(config.api.port);
