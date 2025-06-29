@@ -6,12 +6,17 @@ export const config = {
     api: {
         fileServerHits: 0,
         port: Number(envOrThrow("PORT")),
+        platform: envOrThrow("PLATFORM")
     },
     db: {
         url: envOrThrow("DB_URL"),
         migrationConfig: migrationConfig,
     },
 };
+//I'd rather have this in the helpers.ts file but apperently the compilation
+//order is stupid so for now this will live here.
+//For more details, time travel to when I'm writing this as I'm
+//not gonna remember logic behind this shit by the time it matters
 function envOrThrow(key) {
     const value = process.env[key];
     if (!value) {

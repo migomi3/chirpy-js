@@ -24,7 +24,7 @@ export function respondWithError(res: Response, message: string, code: number) {
     respondWithJSON(res, { error: message }, code);
 }
 
-export function respondWithJSON(res: Response, payload: { error: string; },  code = 200) {
+export function respondWithJSON(res: Response, payload: any,  code = 200) {
     res.header("Content-Type", "application/json");
     res.status(code).send(JSON.stringify(payload));
     res.end()

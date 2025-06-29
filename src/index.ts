@@ -1,15 +1,16 @@
 import express from "express";
+import { migrate } from "drizzle-orm/postgres-js/migrator"
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+
+import { config } from "./config.js";
 
 import { handlerReadiness } from "./api/readiness.js"
 import { middlewareErrorHandler, middlewareLogResponses, middlewareMetricsInc } from "./app/middleware.js";
 import { handlerMetrics } from "./api/metrics.js";
 import { handlerReset } from "./api/reset.js";
 import { handlerValidate } from "./api/validate.js";
-
-import { migrate } from "drizzle-orm/postgres-js/migrator"
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
-import { config } from "./config.js";
+import { handlerUsers } from "./api/users.js";
 
 const app = express();
 
@@ -25,13 +26,17 @@ app.get("/api/healthz", (req, res, next) => {
 app.get("/admin/metrics", (req, res, next) => {
   Promise.resolve(handlerMetrics(req, res)).catch(next);
 });
+
 app.post("/admin/reset", (req, res, next) => {
   Promise.resolve(handlerReset(req, res)).catch(next);
 });
-
 app.post("/api/validate_chirp", (req, res, next) => {
   Promise.resolve(handlerValidate(req, res)).catch(next);
 });
+app.post("/api/users", (req, res, next) => {
+  Promise.resolve(handlerUsers(req, res)).catch(next);
+});
+
 
 app.use(middlewareErrorHandler);
     

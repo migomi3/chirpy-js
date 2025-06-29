@@ -4,14 +4,12 @@ import { respondWithError } from "../helpers.js";
 import { BadRequestError, ForbiddenError, NotFoundError, UnauthorizedError } from "../api/errors.js";
 
 export function middlewareLogResponses(req: Request, res: Response, next: NextFunction) {
-    console.log("Logging responses...")
-
     res.on("finish", () => {
         if (res.statusCode !== 200) {
             console.log(`[NON-OK] ${req.method} ${req.url} - Status: ${res.statusCode}`)
         }
     });
-    console.log("responses logged")
+    //console.log("Responses logged")
     next()
 }
 
