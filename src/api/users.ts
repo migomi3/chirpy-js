@@ -9,11 +9,10 @@ export async function handlerUsers(req: Request, res: Response) {
     }
 
     const input: Input = req.body;
-    let user: NewUser = {
+    const user: NewUser = {
         email: input.email
     }
     
     const result = await createUser(user)
-    console.log(result)
     respondWithJSON(res, result, 201) 
 }

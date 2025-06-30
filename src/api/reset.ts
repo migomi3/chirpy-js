@@ -2,6 +2,7 @@ import {Request, Response} from "express";
 import { config } from "../config.js";
 import { respondWithError, respondWithJSON } from "../helpers.js";
 import { resetUsers } from "../db/queries/users.js";
+import { resetChirps } from "../db/queries/chirps.js";
 
 export function handlerReset(req: Request, res: Response) {
     config.api.fileServerHits = 0;
@@ -10,5 +11,8 @@ export function handlerReset(req: Request, res: Response) {
         respondWithError(res, "Reset not allowed from this system", 403)
     }
 
-    respondWithJSON(res, resetUsers())
+    resetUsers()
+    resetChirps()
+
+    respondWithJSON(res, "Data Reset")
 }
