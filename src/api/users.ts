@@ -3,7 +3,7 @@ import { createUser } from "../db/queries/users.js";
 import { NewUser } from "../db/schema.js";
 import { respondWithJSON } from "../helpers.js";
 
-export async function handlerUsers(req: Request, res: Response) {
+export async function handlerCreateUser(req: Request, res: Response) {
     type Input = {
         email: string;
     }

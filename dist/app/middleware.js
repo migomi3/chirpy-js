@@ -3,15 +3,13 @@ import { respondWithError } from "../helpers.js";
 import { BadRequestError, ForbiddenError, NotFoundError, UnauthorizedError } from "../api/errors.js";
 export function middlewareLogResponses(req, res, next) {
     res.on("finish", () => {
-        if (res.statusCode !== 200) {
+        if (res.statusCode !== 200 && res.statusCode !== 201) {
             console.log(`[NON-OK] ${req.method} ${req.url} - Status: ${res.statusCode}`);
         }
     });
-    //console.log("Responses logged")
     next();
 }
 export function middlewareMetricsInc(req, res, next) {
-    console.log("updating server hits...");
     config.api.fileServerHits++;
     next();
 }
@@ -30,6 +28,7 @@ export function middlewareErrorHandler(err, req, res, next) {
             respondWithError(res, err.message, 404);
             break;
         default:
+            console.log(err.message);
             respondWithError(res, "Something went wrong on our end", 500);
     }
 }

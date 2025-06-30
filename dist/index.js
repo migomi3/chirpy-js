@@ -7,8 +7,9 @@ import { handlerReadiness } from "./api/readiness.js";
 import { middlewareErrorHandler, middlewareLogResponses, middlewareMetricsInc } from "./app/middleware.js";
 import { handlerMetrics } from "./api/metrics.js";
 import { handlerReset } from "./api/reset.js";
-import { handlerUsers } from "./api/users.js";
-import { handlerChirps } from "./api/chirps.js";
+import { handlerUsers as handlerCreateUser } from "./api/createuser.js";
+import { handlerChirps as handlerCreateChirp } from "./api/createchirp.js";
+import { handlerGetAllChirps } from "./api/getallchirps.js";
 const app = express();
 const migrationClient = postgres(config.db.url, { max: 1 });
 await migrate(drizzle(migrationClient), config.db.migrationConfig);
@@ -20,14 +21,17 @@ app.get("/api/healthz", (req, res, next) => {
 app.get("/admin/metrics", (req, res, next) => {
     Promise.resolve(handlerMetrics(req, res)).catch(next);
 });
+app.get("/api/chirps", (req, res, next) => {
+    Promise.resolve(handlerGetAllChirps(req, res).catch(next));
+});
 app.post("/admin/reset", (req, res, next) => {
     Promise.resolve(handlerReset(req, res)).catch(next);
 });
 app.post("/api/users", (req, res, next) => {
-    Promise.resolve(handlerUsers(req, res)).catch(next);
+    Promise.resolve(handlerCreateUser(req, res)).catch(next);
 });
 app.post("/api/chirps", (req, res, next) => {
-    Promise.resolve(handlerChirps(req, res)).catch(next);
+    Promise.resolve(handlerCreateChirp(req, res)).catch(next);
 });
 app.use(middlewareErrorHandler);
 app.listen(config.api.port);
