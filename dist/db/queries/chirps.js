@@ -1,4 +1,4 @@
-import { asc } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { db } from "../index.js";
 import { chirps } from "../schema.js";
 export async function createChirp(chirp) {
@@ -12,4 +12,8 @@ export async function resetChirps() {
 export async function getAllChirps() {
     const results = await db.select().from(chirps).orderBy(asc(chirps.createdAt));
     return results;
+}
+export async function getChirp(id) {
+    const [result] = await db.select().from(chirps).where(eq(chirps.id, id));
+    return result;
 }

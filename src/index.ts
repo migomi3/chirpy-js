@@ -10,7 +10,7 @@ import { middlewareErrorHandler, middlewareLogResponses, middlewareMetricsInc } 
 import { handlerMetrics } from "./api/metrics.js";
 import { handlerReset } from "./api/reset.js";
 import { handlerCreateUser } from "./api/users.js";
-import { handlerCreateChirp, handlerGetAllChirps } from "./api/chirps.js";
+import { handlerCreateChirp, handlerGetAllChirps, handlerGetChirp } from "./api/chirps.js";
 
 const app = express();
 
@@ -28,7 +28,10 @@ app.get("/admin/metrics", (req, res, next) => {
 });
 app.get("/api/chirps", (req, res, next) => {
   Promise.resolve(handlerGetAllChirps(req, res).catch(next))
-})
+});
+app.get("/api/chirps/:chirpID", (req, res, next) => {
+  Promise.resolve(handlerGetChirp(req, res).catch(next))
+});
 
 app.post("/admin/reset", (req, res, next) => {
   Promise.resolve(handlerReset(req, res)).catch(next);

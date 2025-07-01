@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { BadRequestError } from "./errors.js";
-import { CleanMessage, respondWithJSON } from "../helpers.js";
+import { CleanMessage, respondWithError, respondWithJSON } from "../helpers.js";
 import { NewChirp } from "src/db/schema.js";
-import { createChirp, getAllChirps } from "../db/queries/chirps.js";
+import { createChirp, getAllChirps, getChirp } from "../db/queries/chirps.js";
 
 export async function handlerCreateChirp(req: Request, res: Response) {
     type Input = {
@@ -27,6 +27,15 @@ export async function handlerCreateChirp(req: Request, res: Response) {
 
 export async function handlerGetAllChirps(req: Request, res: Response) {
     const results = await getAllChirps()
-    console.log(results)
     respondWithJSON(res, results)
+}
+
+export async function handlerGetChirp(req: Request, res: Response) {
+    const id = req.params.chirpID
+    const result = await getChirp(id)
+    if (!result) {
+        respondWithError(res, "Chirp not found", 404)
+    } else {
+        respondWithJSON(res, result)
+    }
 }
