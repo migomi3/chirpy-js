@@ -35,7 +35,8 @@ export async function handlerGetChirp(req: Request, res: Response) {
     const result = await getChirp(id)
     if (!result) {
         respondWithError(res, "Chirp not found", 404)
-    } else {
-        respondWithJSON(res, result)
+        return;
     }
+    
+    respondWithJSON(res, result)
 }
