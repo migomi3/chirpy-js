@@ -3,7 +3,7 @@ export class BadRequestError extends Error {
         super(message);
     }
 }
-export class UnauthorizedError extends Error {
+export class UserNotAuthenticatedError extends Error {
     constructor(message) {
         super(message);
     }

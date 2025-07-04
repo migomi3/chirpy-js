@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken"
-import { UserNotAuthenticatedError } from "../api/errors.js";
+import { BadRequestError, UserNotAuthenticatedError } from "../api/errors.js";
+import { Request } from "express"
 
 type payload = Pick<JwtPayload, "iss" | "sub" | "iat" | "exp">;
 
@@ -45,4 +46,23 @@ export function validateJWT(tokenString: string, secret: string) {
     }
 
     return token.sub;
+}
+
+export function getBearerToken(req: Request) {
+    const authHeader = req.get("Authorization")
+
+    if (!authHeader) {
+        throw new BadRequestError("Bearer token missing from header")
+    }
+
+    return extractBearerToken(authHeader)
+}
+
+export function extractBearerToken(header: string) {
+    const splitToken = header.split(" ");
+    if (splitToken.length < 2 || splitToken[0] !== "Bearer") {
+        throw new BadRequestError("Invalid token")
+    }
+
+    return splitToken[1]
 }

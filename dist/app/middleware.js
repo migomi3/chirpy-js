@@ -1,6 +1,6 @@
 import { config } from "../config.js";
 import { respondWithError } from "../helpers.js";
-import { BadRequestError, ForbiddenError, NotFoundError, UnauthorizedError } from "../api/errors.js";
+import { BadRequestError, ForbiddenError, NotFoundError, UserNotAuthenticatedError } from "../api/errors.js";
 export function middlewareLogResponses(req, res, next) {
     res.on("finish", () => {
         if (res.statusCode !== 200 && res.statusCode !== 201) {
@@ -18,7 +18,7 @@ export function middlewareErrorHandler(err, req, res, next) {
         case BadRequestError:
             respondWithError(res, err.message, 400);
             break;
-        case UnauthorizedError:
+        case UserNotAuthenticatedError:
             respondWithError(res, err.message, 401);
             break;
         case ForbiddenError:

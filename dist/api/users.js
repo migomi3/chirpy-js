@@ -1,6 +1,7 @@
 import { createUser, getUser } from "../db/queries/users.js";
 import { respondWithError, respondWithJSON } from "../helpers.js";
-import { checkPasswordHash, hashPassword } from "../auth/auth.js";
+import { checkPasswordHash, hashPassword, makeJWT } from "../auth/auth.js";
+import { config } from "../config.js";
 export async function handlerCreateUser(req, res) {
     const input = req.body;
     const hashedPassword = await hashPassword(input.password);
@@ -13,7 +14,11 @@ export async function handlerCreateUser(req, res) {
 }
 export async function handlerLogin(req, res) {
     const input = req.body;
+    if (!input.expiresInSeconds || input.expiresInSeconds > 3600) {
+        input.expiresInSeconds = 3600;
+    }
     const user = await getUser(input.email);
+    const token = makeJWT(user.id, input.expiresInSeconds, config.api.secret);
     if (!user || !await checkPasswordHash(input.password, user.hashedPassword)) {
         respondWithError(res, "Incorrect email or password", 401);
         return;
@@ -22,7 +27,8 @@ export async function handlerLogin(req, res) {
         id: user.id,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
-        email: user.email
+        email: user.email,
+        token: token
     };
     respondWithJSON(res, verifiedUser);
 }
