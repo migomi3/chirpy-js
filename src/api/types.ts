@@ -7,7 +7,8 @@ export type User = {
     email: string;
 }
 
-export type SecureUser = Omit<User, "password"> & { 
+export type BasicUser = Omit<User, "password">
+export type SecureUser = BasicUser & { 
     token: string;
     refreshToken: string;
 }

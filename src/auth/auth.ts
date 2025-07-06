@@ -54,7 +54,7 @@ export function getBearerToken(req: Request) {
     const authHeader = req.get("Authorization")
 
     if (!authHeader) {
-        throw new BadRequestError("Bearer token missing from header");
+        throw new UserNotAuthenticatedError("Bearer token missing from header");
     }
 
     return extractBearerToken(authHeader);

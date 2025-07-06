@@ -1,7 +1,8 @@
-import { createUser, getUser } from "../db/queries/users.js";
+import { createUser, getUser, updateUserLogin } from "../db/queries/users.js";
 import { respondWithError, respondWithJSON } from "../helpers.js";
-import { checkPasswordHash, hashPassword, makeJWT, makeRefreshToken } from "../auth/auth.js";
+import { checkPasswordHash, getBearerToken, hashPassword, makeJWT, makeRefreshToken, validateJWT } from "../auth/auth.js";
 import { config } from "../config.js";
+import { BadRequestError } from "./errors.js";
 export async function handlerCreateUser(req, res) {
     const input = req.body;
     const hashedPassword = await hashPassword(input.password);
@@ -30,4 +31,21 @@ export async function handlerLogin(req, res) {
         refreshToken: refreshToken.token,
     };
     respondWithJSON(res, verifiedUser);
+}
+export async function handlerUpdateLoginInfo(req, res) {
+    const input = req.body;
+    if (!input.password || !input.email) {
+        throw new BadRequestError("Missing required fields");
+    }
+    const tokenString = getBearerToken(req);
+    const userID = validateJWT(tokenString, config.jwt.secret);
+    const hashedPassword = await hashPassword(input.password);
+    const user = await updateUserLogin(input.email, hashedPassword, userID);
+    const safeUser = {
+        email: user.email,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+        id: user.id,
+    };
+    respondWithJSON(res, safeUser);
 }
