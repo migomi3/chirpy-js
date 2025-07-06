@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { BadRequestError, UserNotAuthenticatedError } from "../api/errors.js";
 import { randomBytes } from "node:crypto";
 import { createRefreshToken } from "../db/queries/refreshTokens.js";
-const TOKEN_ISSUER = "chirpy";
+import { config } from "../config.js";
 export async function hashPassword(password) {
     const saltRounds = 10;
     return bcrypt.hash(password, saltRounds);
@@ -14,7 +14,7 @@ export async function checkPasswordHash(password, hash) {
 export function makeJWT(userID, expiresIn, secret) {
     const iat = Math.floor(Date.now() / 1000);
     return jwt.sign({
-        iss: TOKEN_ISSUER,
+        iss: config.jwt.issuer,
         sub: userID,
         iat: iat,
         exp: iat + expiresIn
@@ -28,7 +28,7 @@ export function validateJWT(tokenString, secret) {
     catch (err) {
         throw new UserNotAuthenticatedError("Invalid token");
     }
-    if (token.iss !== TOKEN_ISSUER) {
+    if (token.iss !== config.jwt.issuer) {
         throw new UserNotAuthenticatedError("Invalid Issuer");
     }
     if (!token.sub) {
@@ -55,7 +55,9 @@ export function makeRefreshToken(userId) {
     const tokenString = randomBytes(bytes).toString('hex');
     const token = {
         token: tokenString,
-        userId: userId
+        userId: userId,
+        expiresAt: new Date(Date.now() + config.jwt.refreshDuration),
+        revokedAt: null,
     };
     return createRefreshToken(token);
 }

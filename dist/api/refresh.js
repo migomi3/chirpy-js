@@ -4,7 +4,6 @@ import { respondWithError, respondWithJSON } from "../helpers.js";
 import { config } from "../config.js";
 export async function handlerRefresh(req, res) {
     const tokenString = getBearerToken(req);
-    console.log(`TokenString: ${tokenString}`);
     const refreshToken = await getRefeshToken(tokenString);
     if (!refreshToken) {
         respondWithError(res, "Refresh token not found", 401);

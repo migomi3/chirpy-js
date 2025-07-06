@@ -73,7 +73,6 @@ export function makeRefreshToken(userId: string) {
     const bytes = 32;
     const tokenString = randomBytes(bytes).toString('hex');
     
-    console.log(`Making refresh token with ${tokenString}`)
     const token: NewRefreshToken = {
         token: tokenString,
         userId: userId,

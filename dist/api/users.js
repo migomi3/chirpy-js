@@ -21,8 +21,6 @@ export async function handlerLogin(req, res) {
     }
     const jwtToken = makeJWT(user.id, config.jwt.defaultDuration, config.jwt.secret);
     const refreshToken = await makeRefreshToken(user.id);
-    console.log(`JWT/Access Token: ${jwtToken}`);
-    console.log(`New Refresh Token's token: ${refreshToken.token}`);
     const verifiedUser = {
         id: user.id,
         createdAt: user.createdAt,
