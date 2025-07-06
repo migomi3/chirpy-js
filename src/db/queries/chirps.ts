@@ -9,16 +9,16 @@ export async function createChirp(chirp: NewChirp) {
 }
 
 export async function resetChirps() {
-    const [result] = await db.delete(chirps).returning()
-    return result
+    const [result] = await db.delete(chirps).returning();
+    return result;
 }
 
 export async function getAllChirps() {
     const results = await db.select().from(chirps).orderBy(asc(chirps.createdAt));
-    return results
+    return results;
 }
 
 export async function getChirp(id: string) {
-    const [result] = await db.select().from(chirps).where(eq(chirps.id, id))
-    return result
+    const [result] = await db.select().from(chirps).where(eq(chirps.id, id));
+    return result;
 }

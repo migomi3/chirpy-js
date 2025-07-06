@@ -5,19 +5,26 @@ process.loadEnvFile()
 type Config = {
   api: APIConfig;
   db: DBConfig;
+  jwt: JWTConfig;
 }
 
 type APIConfig = {
   fileServerHits: number;
   port: number;
   platform: string;
-  secret: string;
 }
 
 type DBConfig = {
   url: string;
   migrationConfig: MigrationConfig;
 }
+
+type JWTConfig = {
+  defaultDuration: number;
+  refreshDuration: number;
+  secret: string;
+  issuer: string;
+};
 
 const migrationConfig: MigrationConfig = {
   migrationsFolder: "./src/db/migrations"
@@ -27,14 +34,21 @@ export const config: Config = {
   api: {
     fileServerHits: 0,
     port: Number(envOrThrow("PORT")),
-    platform: envOrThrow("PLATFORM"),
-    secret: envOrThrow("SECRET")
+    platform: envOrThrow("PLATFORM")
   },
   db: {
     url: envOrThrow("DB_URL"),
     migrationConfig: migrationConfig,
   },
+  jwt: {
+    defaultDuration: 60 * 60, // 1 hour in seconds
+    refreshDuration: 60 * 60 * 24 * 60 * 1000, // 60 days in milliseconds
+    secret: envOrThrow("SECRET"),
+    issuer: "chirpy",
+  },
 };
+
+
 
 //I'd rather have this in the helpers.ts file but apperently the compilation
 //order is stupid so for now this will live here.

@@ -5,10 +5,10 @@ export type User = {
     updatedAt: Date;
     password: string;
     email: string;
-    token: string;
 }
 
-export type SecureUser = Omit<User, "password">
-export type LoginInput = Omit<User, "id" | "createdAt" | "updatedAt"> & {
-    expiresInSeconds?: number;
+export type SecureUser = Omit<User, "password"> & { 
+    token: string;
+    refreshToken: string;
 }
+export type LoginInput = Omit<User, "id" | "createdAt" | "updatedAt"> 

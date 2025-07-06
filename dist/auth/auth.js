@@ -1,6 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { BadRequestError, UserNotAuthenticatedError } from "../api/errors.js";
+import { randomBytes } from "node:crypto";
+import { createRefreshToken } from "../db/queries/refreshTokens.js";
 const TOKEN_ISSUER = "chirpy";
 export async function hashPassword(password) {
     const saltRounds = 10;
@@ -47,4 +49,13 @@ export function extractBearerToken(header) {
         throw new BadRequestError("Invalid token");
     }
     return splitToken[1];
+}
+export function makeRefreshToken(userId) {
+    const bytes = 32;
+    const tokenString = randomBytes(bytes).toString('hex');
+    const token = {
+        token: tokenString,
+        userId: userId
+    };
+    return createRefreshToken(token);
 }

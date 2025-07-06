@@ -2,10 +2,12 @@ import bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken"
 import { BadRequestError, UserNotAuthenticatedError } from "../api/errors.js";
 import { Request } from "express"
+import { randomBytes } from "node:crypto";
+import { NewRefreshToken } from "../db/schema.js";
+import { createRefreshToken } from "../db/queries/refreshTokens.js";
+import { config } from "../config.js";
 
 type payload = Pick<JwtPayload, "iss" | "sub" | "iat" | "exp">;
-
-const TOKEN_ISSUER = "chirpy";
 
 export async function hashPassword(password: string) {
     const saltRounds = 10
@@ -20,7 +22,7 @@ export function makeJWT(userID: string, expiresIn: number, secret: string) {
     const iat = Math.floor(Date.now() / 1000)
 
     return jwt.sign({
-        iss: TOKEN_ISSUER,
+        iss: config.jwt.issuer,
         sub: userID,
         iat: iat,
         exp: iat + expiresIn
@@ -37,7 +39,7 @@ export function validateJWT(tokenString: string, secret: string) {
         throw new UserNotAuthenticatedError("Invalid token");
     }
 
-    if (token.iss !== TOKEN_ISSUER) {
+    if (token.iss !== config.jwt.issuer) {
         throw new UserNotAuthenticatedError("Invalid Issuer")
     }
 
@@ -52,10 +54,10 @@ export function getBearerToken(req: Request) {
     const authHeader = req.get("Authorization")
 
     if (!authHeader) {
-        throw new BadRequestError("Bearer token missing from header")
+        throw new BadRequestError("Bearer token missing from header");
     }
 
-    return extractBearerToken(authHeader)
+    return extractBearerToken(authHeader);
 }
 
 export function extractBearerToken(header: string) {
@@ -65,4 +67,19 @@ export function extractBearerToken(header: string) {
     }
 
     return splitToken[1]
+}
+
+export function makeRefreshToken(userId: string) {
+    const bytes = 32;
+    const tokenString = randomBytes(bytes).toString('hex');
+    
+    console.log(`Making refresh token with ${tokenString}`)
+    const token: NewRefreshToken = {
+        token: tokenString,
+        userId: userId,
+        expiresAt: new Date(Date.now() + config.jwt.refreshDuration),
+        revokedAt: null,
+    };
+
+    return createRefreshToken(token);
 }

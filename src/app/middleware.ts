@@ -5,7 +5,7 @@ import { BadRequestError, ForbiddenError, NotFoundError, UserNotAuthenticatedErr
 
 export function middlewareLogResponses(req: Request, res: Response, next: NextFunction) {
     res.on("finish", () => {
-        if (res.statusCode !== 200 && res.statusCode !== 201) {
+        if (!(res.statusCode <= 299 && res.statusCode >= 200)) {
             console.log(`[NON-OK] ${req.method} ${req.url} - Status: ${res.statusCode}`)
         }
     });

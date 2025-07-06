@@ -6,7 +6,7 @@ import { config } from "../config.js";
 export async function handlerCreateChirp(req, res) {
     const input = req.body;
     const tokenString = getBearerToken(req);
-    const userID = validateJWT(tokenString, config.api.secret);
+    const userID = validateJWT(tokenString, config.jwt.secret);
     if (input.body.length > 140) {
         throw new BadRequestError("Chirp is too long. Max length is 140");
     }

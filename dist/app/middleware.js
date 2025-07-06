@@ -3,7 +3,7 @@ import { respondWithError } from "../helpers.js";
 import { BadRequestError, ForbiddenError, NotFoundError, UserNotAuthenticatedError } from "../api/errors.js";
 export function middlewareLogResponses(req, res, next) {
     res.on("finish", () => {
-        if (res.statusCode !== 200 && res.statusCode !== 201) {
+        if (!(res.statusCode <= 299 && res.statusCode >= 200)) {
             console.log(`[NON-OK] ${req.method} ${req.url} - Status: ${res.statusCode}`);
         }
     });
