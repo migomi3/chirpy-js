@@ -12,6 +12,7 @@ type APIConfig = {
   fileServerHits: number;
   port: number;
   platform: string;
+  polkaKey: string
 }
 
 type DBConfig = {
@@ -34,7 +35,8 @@ export const config: Config = {
   api: {
     fileServerHits: 0,
     port: Number(envOrThrow("PORT")),
-    platform: envOrThrow("PLATFORM")
+    platform: envOrThrow("PLATFORM"),
+    polkaKey: envOrThrow("POLKA_KEY")
   },
   db: {
     url: envOrThrow("DB_URL"),
@@ -47,8 +49,6 @@ export const config: Config = {
     issuer: "chirpy",
   },
 };
-
-
 
 //I'd rather have this in the helpers.ts file but apperently the compilation
 //order is stupid so for now this will live here.

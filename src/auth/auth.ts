@@ -82,3 +82,22 @@ export function makeRefreshToken(userId: string) {
 
     return createRefreshToken(token);
 }
+
+export function getAPIKey(req: Request) {
+    const authHeader = req.get("Authorization")
+
+    if (!authHeader) {
+        throw new UserNotAuthenticatedError("Bearer token missing from header");
+    }
+
+    return extractAPIKey(authHeader);
+}
+
+export function extractAPIKey(header: string) {
+    const splitToken = header.split(" ");
+    if (splitToken.length < 2 || splitToken[0] !== "ApiKey") {
+        throw new BadRequestError("Invalid token")
+    }
+
+    return splitToken[1]
+}
