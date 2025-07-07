@@ -17,3 +17,7 @@ export async function updateUserLogin(email, hashedPassword, userID) {
     const [result] = await db.update(users).set({ email: email, hashedPassword: hashedPassword }).where(eq(users.id, userID)).returning();
     return result;
 }
+export async function upgradeUser(id) {
+    const [result] = await db.update(users).set({ isChirpyRed: true }).where(eq(users.id, id)).returning();
+    return result;
+}

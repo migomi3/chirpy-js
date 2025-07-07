@@ -29,6 +29,7 @@ export async function handlerLogin(req, res) {
         email: user.email,
         token: jwtToken,
         refreshToken: refreshToken.token,
+        isChirpyRed: user.isChirpyRed
     };
     respondWithJSON(res, verifiedUser);
 }
@@ -46,6 +47,7 @@ export async function handlerUpdateLoginInfo(req, res) {
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
         id: user.id,
+        isChirpyRed: user.isChirpyRed,
     };
     respondWithJSON(res, safeUser);
 }

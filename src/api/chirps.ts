@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { BadRequestError } from "./errors.js";
 import { CleanMessage, respondWithError, respondWithJSON } from "../helpers.js";
 import { NewChirp } from "src/db/schema.js";
-import { createChirp, getAllChirps, getChirp } from "../db/queries/chirps.js";
+import { createChirp, deleteChirp, getAllChirps, getChirp } from "../db/queries/chirps.js";
 import { getBearerToken, validateJWT } from "../auth/auth.js";
 import { config } from "../config.js";
 
@@ -42,4 +42,27 @@ export async function handlerGetChirp(req: Request, res: Response) {
     }
     
     respondWithJSON(res, result)
+}
+
+export async function handlerDeleteChirp(req: Request, res: Response) {
+    const tokentString = getBearerToken(req);
+    const userId = validateJWT(tokentString, config.jwt.secret);
+    
+    const chirpId = req.params.chirpID;
+    const chirp = await getChirp(chirpId);
+
+    if (!chirp) {
+        
+        respondWithError(res, "Chirp not found", 404);
+        return;
+    }
+
+    if (chirp.userId !== userId) {
+        respondWithError(res, "Can not delete another user's chirp", 403);
+        return;
+    }
+
+    const result = await deleteChirp(chirpId);
+
+    respondWithJSON(res, result, 204);
 }

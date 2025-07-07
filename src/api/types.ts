@@ -5,6 +5,7 @@ export type User = {
     updatedAt: Date;
     password: string;
     email: string;
+    isChirpyRed: boolean;
 }
 
 export type BasicUser = Omit<User, "password">
@@ -12,4 +13,4 @@ export type SecureUser = BasicUser & {
     token: string;
     refreshToken: string;
 }
-export type LoginInput = Omit<User, "id" | "createdAt" | "updatedAt"> 
+export type LoginInput = Omit<User, "id" | "createdAt" | "updatedAt" | "isChirpyRed"> 
